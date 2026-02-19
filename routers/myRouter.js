@@ -25,7 +25,7 @@ router.get("/:id", myController.show);
 
 // // destroy 
 
-// router.delete("/:id", myController.destroy);
+router.delete("/:id", myController.destroy);
 
 
 module.exports = router;

@@ -112,22 +112,20 @@ function show(req, res, next) {
 
 // // destroy
 
-// function destroy(req, res, next) {
-//     const myId = parseInt(req.params.id);
+function destroy(req, res, next) {
+    const id = parseInt(req.params.id);
 
-//     const filteredDeletePost = postsList.find(e => e.id === myId)
+    const sqlDelete = 'DELETE FROM posts WHERE id = ?'
 
-//     if (!filteredDeletePost) {
-//         throw next(new Error("Post non trovato"))
-//     }
-
-//     postsList.splice(postsList.indexOf(filteredDeletePost), 1)
-
-//     console.log(postsList);
+    connection.query(sqlDelete, [id], (err) => {
+        if (err) return res.status(500).json({ error: "Failed to delete the post" });
+        res.sendStatus(204);
+    })
 
 
-//     res.sendStatus(204);
 
-// }
 
-module.exports = { index, show };
+
+}
+
+module.exports = { index, show, destroy };
