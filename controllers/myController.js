@@ -11,7 +11,7 @@ const connection = require("../data/db");
 
 function index(req, res) {
 
-    const sql = "SELECT * FROM posts"
+    const sql = 'SELECT * FROM posts'
 
     connection.query(sql, (err, results) => {
         if (err) return res.status(500).json({ error: 'Database query failed' });
@@ -21,21 +21,30 @@ function index(req, res) {
 
 }
 
-// // show 
+// show 
 
-// function show(req, res, next) {
-//     const myId = parseInt(req.params.id);
-//     const filteredPost = postsList.find(e => e.id === myId)
+function show(req, res, next) {
+    const id = parseInt(req.params.id);
 
-//     if (!filteredPost) {
-//         throw next(new Error("Post non trovato"))
-//     }
+    const sql = 'SELECT * FROM posts WHERE id = ?'
+
+    const sqlWithTags = 'SELECT tags.label FROM posts JOIN post_tag ON posts.id = post_tag.post_id JOIN tags ON post_tag.tag_id = tags.id WHERE posts.id = ? '
+
+    connection.query(sql, [id], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database query failed' });
+        if (results.length === 0) return res.status(404).json({ error: 'Post not found' });
+        const post = results[0]
 
 
 
+        connection.query(sqlWithTags, [id], (err, tagsResults) => {
+            if (err) return res.status(500).json({ error: 'Database query failed' });
 
-//     res.json(filteredPost)
-// }
+            post.tags = tagsResults;
+            res.json(post);
+        });
+    });
+}
 
 
 // // store
@@ -121,4 +130,4 @@ function index(req, res) {
 
 // }
 
-module.exports = { index };
+module.exports = { index, show };

@@ -9,7 +9,7 @@ router.get("/", myController.index);
 
 // show
 
-// router.get("/:id", myController.show);
+router.get("/:id", myController.show);
 
 // // store 
 
